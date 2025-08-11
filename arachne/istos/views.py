@@ -234,7 +234,7 @@ def get_page_num(request, parent_id):
     print(task_url)
     link = Link.objects.get(url=task_url)
 
-    if(parent_id != ""):
+    if(parent_id != 0):
         parent = Link.objects.get(id=parent_id)
         link.hasParent = parent
         link.save()
