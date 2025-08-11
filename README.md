@@ -24,19 +24,27 @@ macOS/Linux:
 ```
 
 ## Running the server
-Starts Django
+1.Go to `arachne`
+```bash
+    cd arachne
+```
+2.Apply migrations
+```bash
+    py manage.py migrate
+```
+3.Start Django development server
 ```bash
     py manage.py runserver
 ```
-Start background tasks with
+4.Start background tasks:
 ```bash
     py manage.py process_tasks
 ```
-or for multiple processors
+Or for multiple processors
 ```bash
     py dev_workers.py <int:Num background workers>
 ```
-*Using to many may cause a 429 error from too many requests*
+*Using to many may cause a 429 error from to many requests*
 
 ## Editing
 Sass - https://sass-lang.com/install/
