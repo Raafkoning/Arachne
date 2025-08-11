@@ -172,3 +172,13 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+#Code
+*.code-workspace
+initial_funtion.txt
+test_code.py
+saves/
+chrome.exe
+geckodriver.exe
+populate_code.py
+additional_info.md

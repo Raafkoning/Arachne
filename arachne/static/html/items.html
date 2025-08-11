@@ -1,0 +1,158 @@
+{% extends "skeleton.html" %}
+{% block title %}Items{% endblock %}
+{% block header %}
+    <h1>Site Items</h1>
+    <div class="link_info">   
+        <h2>Info</h2>
+        <h3>URL: <a class="url" href="{{data.link_info.0}}" target="_blank">{{data.link_info.0}}</a></h2>
+        <h3>Title: {{data.link_info.1}}</h2>
+            
+    </div>
+    
+    
+    
+    {% if data.parent_info %}
+    <div class="link_info">
+        <h2>Parent Info</h2>
+        <h3>Parent URL: <a class="parent_url" href="{{data.parent_info.0}}" target="_blank">{{data.parent_info.0}}</a></h2>
+        <h3>Parent Title: {{data.parent_info.1}}</h2>
+    </div>
+
+    {% endif %}
+
+
+
+    <a class="settings" href="/settings"><i class="fa-solid fa-gear"></i></a>
+    <a class="back" href="/"><i class="fa-solid fa-circle-arrow-left"></i></a>
+    <button class="info select_all" onclick="selectAll()">Select All</button>
+    <a href="/update/{{data.link_info.0|urlencode}}" class="warning update_btn items_update" >Update Items</a>
+{% endblock %}
+
+{% block content %}
+    <table>
+        <thead>
+            <tr>
+                <th>Delete</th>
+                <th>ID</th>
+                <th>Save</th>
+                <th>Item</th>
+                <th>URL</th>
+                <th>Grabbed</th>
+                <th>Saved</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for link in data.items %}
+                <tr>
+                    <td><a href="javascript:void(0)" class="danger delete_btn" onclick="deleteConfirm('{{ link.id }}', 'Item')">Delete</a></td>
+                    <td>{{link.id}}</td>
+                    <td>
+                        {% if link.type == 'abs' or link.type == 'rel' %}
+                            <a href="/sec_scrape/{{data.link_info.2}}/{{link.url}}" class="info item_btn">Scrape</a>
+                            <!--<label class="checkbox link_del">
+                                <input id="{{link.id}}" type="checkbox">
+                                <span class="c_checkbox"></span>
+                            </label>-->
+                        {% else %}
+                        <label class="checkbox">
+                            <input id="{{link.id}}" type="checkbox">
+                            <span class="c_checkbox"></span>
+                        </label>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if link.type == 'vid'%}
+                            <label for="{{link.id}}"><video class="item" src="{{link.url}}" controls></label>
+                        {% elif link.type == 'pic' %}
+                            <label for="{{link.id}}"><img class="item" src="{{link.url}}"></label>
+                        {% elif link.type == 'abs' or link.type == 'rel' %}
+                            <label for="{{link.id}}" class="item">{{link.type}}</label>
+                        {% endif %}
+                    </td>
+                    <td><a class="link_url" href="{{link.url}}" target="_blank">{{link.url}}</a></td>
+                    <td>{{link.dateGrabbed}}</td>
+
+                    <td>
+                        {% if link.saved == True %}
+                            {{link.dateSaved}}
+                        {% else %}
+                            Not Saved
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div id="save_form">
+        <form id="form_ids" method="POST">
+            {% csrf_token %}
+            <input name="save_form_input" id="save_form_input" type="text">
+        </form>
+            <button class="success" onclick="save_ids()">Save</button>
+        
+
+
+        <a href="javascript:void(0)" class="warning delete_sel delete_btn" onclick="delete_ids()">Delete Selected</a>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        function save_ids(){
+            var inputs = document.getElementsByTagName('input')
+            var final_input = document.getElementById('save_form_input')
+
+            save_ids = ""
+            
+            for(var i=0; i<inputs.length; i++){
+                if(inputs[i].type=="checkbox" && inputs[i].checked){
+                    console.log(inputs[i].id)
+                    if(save_ids == ""){
+                        save_ids = inputs[i].id
+                    }
+                    else{
+                        save_ids = save_ids+","+inputs[i].id
+                    }   
+                }    
+            }
+            save_ids = "save,"+save_ids
+            final_input.value = save_ids
+            document.getElementById('form_ids').submit();
+
+        }
+
+        function delete_ids(){
+            var inputs = document.getElementsByTagName('input')
+            var final_input = document.getElementById('save_form_input')
+
+            save_ids = ""
+            
+            for(var i=0; i<inputs.length; i++){
+                if(inputs[i].type=="checkbox" && inputs[i].checked){
+                    console.log(inputs[i].id)
+                    if(save_ids == ""){
+                        save_ids = inputs[i].id
+                    }
+                    else{
+                        save_ids = save_ids+","+inputs[i].id
+                    }   
+                }    
+            }
+            save_ids = "delete,"+save_ids
+            final_input.value = save_ids
+            document.getElementById('form_ids').submit();
+
+        }
+
+        function selectAll(){
+            var inputs = document.getElementsByTagName('input')
+
+            for(var i=0; i<inputs.length; i++){
+                if(inputs[i].type=="checkbox"){
+                    inputs[i].checked = true
+                }    
+            }
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends "skeleton.html" %}
+{% block title %}Settings{% endblock %}
+
+{% block header %}
+    <h1>Settings</h1>
+    <a class="back" href="javascript:void(0)" onclick="goBack()"><i class="fa-solid fa-circle-arrow-left"></i></a>
+{% endblock %}
+
+{% block content %}
+<div class="settings_body">
+    
+    <form id="settings_form" method="POST" action="/settings/">
+        {% csrf_token %}
+
+        <div class="saveloc">
+            <h2>Save Location</h2>
+            <h3>{{ data.savelocation }}</h3>
+            <!--<input class="saveloc_input" type="text">
+            <a href="javascript:void(0)" class="success submit_btn">Submit Path</a>-->
+        </div>
+
+        <div id="main_settings">
+            <h2>Options</h2>
+            <div class="options">
+                {% for setting in data.settings %}
+                <div id="{{setting.name}}">
+                    <div class="set_opt">
+                        <h2>{{ setting.label }}</h2>
+                        <span class="set_tip">{{ setting.info }}</span>
+                    </div>
+                    <label class="switch">
+                        {% if setting.on == True %}
+                            <input name="{{setting.name}}" type='checkbox' checked/>
+                        {% else %}
+                            <input name="{{setting.name}}" type='checkbox'/>
+                        {% endif %}
+                        <span class='slider'></span>
+                    </label>
+                </div>
+
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="formats">
+            <div class="picformats">
+                <h4>Picture Formats</h4>
+
+                {% for form_name, form_save in data.picformats %}
+                    <div> 
+                        <label class="checkbox" for={{form_name}}>
+                            {% if form_save == True %}
+                                <input id={{form_name}} name={{form_name}} type="checkbox" checked>
+                            {% else %}
+                                <input id={{form_name}} name={{form_name}} type="checkbox">
+                            {% endif %}
+                            <span class="c_checkbox"></span>
+                        {{ form_name }} </label>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="vidformats">
+                <h4>Video Formats</h4>
+
+                {% for form_name, form_save in data.vidformats %}
+                    <div> 
+                        <label class="checkbox" for={{form_name}}>
+                            {% if form_save == True %}
+                                <input id={{form_name}} name={{form_name}} type="checkbox" checked>
+                            {% else %}
+                                <input id={{form_name}} name={{form_name}} type="checkbox">
+                            {% endif %}
+                            <span class="c_checkbox"></span>
+                        {{ form_name }} </label>
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+
+        <div class="saveset_cont">
+            <button class="success saveset" type="submit">Save</button>
+        </div>
+            
+    </form>        
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        window.onload = function(){
+            relatedLinks()
+        }
+
+        document.getElementById("absolute_links").addEventListener("click", relatedLinks); 
+
+        function relatedLinks(){
+            const div = document.getElementById("absolute_links");
+            const checkbox = div.querySelector('input[type="checkbox"]');
+            if(checkbox.checked){
+                document.getElementById("related_links").style.display = "block"
+            }
+            else{
+                document.getElementById("related_links").style.display = "none"
+            }
+        }
+
+        function switchCheck(switch_id){
+            console.log(switch_id.checked)
+        }
+
+    </script>
+{% endblock %}
